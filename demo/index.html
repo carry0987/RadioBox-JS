@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link href="../dist/radioBox.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <h1>Test</h1>
+        <div class="radio">
+            <input id="radio-1" name="radio-group" type="radio" value="radio-1" />
+            <label for="radio-1" class="radio-label">Radio-1</label>
+        </div>
+        <div class="radio">
+            <input id="radio-2" name="radio-group" type="radio" value="radio-2" />
+            <label for="radio-2" class="radio-label">Radio-2</label>
+        </div>
+        <div class="radio">
+            <input id="radio-3" name="radio-group" type="radio" value="radio-3" />
+            <label for="radio-3" class="radio-label">Radio-3</label>
+        </div>
+    </div>
+    <script src="../dist/radioBox.min.js"></script>
+    <script type="text/javascript">
+    let radioBox = new RadioBox('.radio', {
+        title: 'Radio 1',
+        checked: true
+    });
+    radioBox.onChange = function(e) {
+        console.log(e.target.value)
+    };
+    console.log(radioBox);
+    </script>
+</body>
+</html>

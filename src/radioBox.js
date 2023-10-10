@@ -26,7 +26,7 @@ class RadioBox {
      */
     init(elem, option, id) {
         this.id = id;
-        this.option = Util.deepMerge(RadioBox.defaultOption, option);
+        this.option = Util.deepMerge({}, RadioBox.defaultOption, option);
         this.elements = []; // Store all elements here which will be used in destroy function
         let ele = Util.getElem(elem, 'all');
         if (ele.length < 1) throwError('Elements not found');
@@ -83,7 +83,7 @@ class RadioBox {
     }
 }
 
-RadioBox.version = '1.3.2';
+RadioBox.version = '1.3.3';
 RadioBox.instance = [];
 RadioBox.defaultOption = {
     checked: null,

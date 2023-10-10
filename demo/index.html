@@ -40,15 +40,19 @@
     <script src="../dist/radioBox.min.js"></script>
     <script type="text/javascript">
     let radioBox = new RadioBox('#app .radio', {
-        checked: 'radio-2'
+        checked: 'radio-2',
+        onChange: function (value) {
+            console.log(value);
+        }
     });
-    radioBox.onChange = function(e) {
-        console.log('HAHA')
-    };
+
     console.log(radioBox.value);
     let radioBox2 = new RadioBox('#app-2 .radio', {
         checked: 'radio-6'
     });
+    radioBox2.onChange = (e) => {
+        console.log(e.target.value);
+    };
     </script>
 </body>
 </html>

@@ -17,6 +17,8 @@ class RadioBox {
      * Initializes the plugin
      */
     init(elem, option, id) {
+        this.id = id;
+        this.option = Util.deepMerge(RadioBox.defaultOption, option);
         this.elements = []; // Store all elements here which will be used in destroy function
         let ele = Util.getElem(elem, 'all');
         if (ele.length < 1) throwError('Elements not found');
@@ -28,6 +30,12 @@ class RadioBox {
             if (element.type !== 'radio') throwError('Element must be radio');
             if (!groupName) groupName = element.name;
             if (element.name !== groupName) throwError('All radioboxes must belong to the same group');
+            // Set checked
+            if (this.option.checked && element.value === this.option.checked) {
+                element.checked = true;
+                element.setAttribute('checked', 'checked');
+            }
+            // Add event listener
             element.addEventListener('change', (e) => {
                 const isChecked = e.target.checked;
                 this.elements.forEach(el => {
@@ -39,6 +47,14 @@ class RadioBox {
             this.elements.push(element); // Store each radio input box
         });
 
+        return this;
+    }
+
+    empty() {
+        this.elements.forEach(element => {
+            element.checked = false;
+            element.removeAttribute('checked');
+        });
         return this;
     }
 
@@ -57,7 +73,7 @@ class RadioBox {
     }
 }
 
-RadioBox.version = '1.0.0';
+RadioBox.version = '1.2.0';
 RadioBox.instance = [];
 RadioBox.defaultOption = {
     checked: null,

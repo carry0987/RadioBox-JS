@@ -7,7 +7,6 @@ class RadioBox {
     constructor(elem, option = {}) {
         if (!(this instanceof RadioBox)) return new RadioBox(elem, option);
         this.init(elem, option, RadioBox.instance.length);
-        this.onChange = (e) => {if (this.option.onChange) this.option.onChange(e)};
         RadioBox.instance.push(this);
 
         if (RadioBox.instance.length === 1) reportInfo('RadioBox is loaded, version:' + RadioBox.version);
@@ -32,6 +31,7 @@ class RadioBox {
         let ele = Util.getElem(elem, 'all');
         if (ele.length < 1) throwError('Elements not found');
         let groupName;
+        this.onChange = (e) => {if (this.option.onChange) this.option.onChange(e)};
         ele.forEach(element => {
             element = Util.getElem('input', null, element);
             if (element.length < 1) throwError('Elements not found');
@@ -82,7 +82,7 @@ class RadioBox {
     }
 }
 
-RadioBox.version = '1.3.0';
+RadioBox.version = '1.3.1';
 RadioBox.instance = [];
 RadioBox.defaultOption = {
     checked: null,

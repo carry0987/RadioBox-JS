@@ -22,15 +22,36 @@
             <label for="radio-3" class="radio-label">Radio-3</label>
         </div>
     </div>
+    <div id="app-2">
+        <h1>Test2</h1>
+        <div class="radio">
+            <input id="radio-4" name="radio-group-2" type="radio" value="radio-4" />
+            <label for="radio-4" class="radio-label">Radio-4</label>
+        </div>
+        <div class="radio">
+            <input id="radio-5" name="radio-group-2" type="radio" value="radio-5" />
+            <label for="radio-5" class="radio-label">Radio-5</label>
+        </div>
+        <div class="radio">
+            <input id="radio-6" name="radio-group-2" type="radio" value="radio-6" />
+            <label for="radio-6" class="radio-label">Radio-6</label>
+        </div>
+    </div>
     <script src="../dist/radioBox.min.js"></script>
     <script type="text/javascript">
-    let radioBox = new RadioBox('.radio', {
+    let radioBox = new RadioBox('#app .radio', {
         checked: 'radio-2'
     });
     radioBox.onChange = function(e) {
-        console.log(radioBox.value)
+        console.log('HAHA')
     };
     console.log(radioBox.value);
+    let radioBox2 = new RadioBox('#app-2 .radio', {
+        checked: 'radio-6'
+    });
+    radioBox2.onChange = function(e) {
+        console.log('HEHE')
+    };
     </script>
 </body>
 </html>

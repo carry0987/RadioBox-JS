@@ -14,6 +14,15 @@ class RadioBox {
     }
 
     /**
+     * Get value of the checked radio box
+     * @return {string} Value of the checked radio box
+     */
+    get value() {
+        let checkedRadio = this.elements.find(element => element.getAttribute('checked') === 'checked');
+        return checkedRadio ? checkedRadio.value : null;
+    }
+
+    /**
      * Initializes the plugin
      */
     init(elem, option, id) {
@@ -73,7 +82,7 @@ class RadioBox {
     }
 }
 
-RadioBox.version = '1.2.2';
+RadioBox.version = '1.3.0';
 RadioBox.instance = [];
 RadioBox.defaultOption = {
     checked: null,

@@ -30,6 +30,9 @@ class RadioBox {
             if (element.name !== groupName) throwError('All radioboxes must belong to the same group');
             element.addEventListener('change', (e) => {
                 const isChecked = e.target.checked;
+                this.elements.forEach(el => {
+                    if(el !== e.target) el.removeAttribute('checked');
+                });
                 e.target.setAttribute('checked', isChecked ? 'checked' : '');
                 this.onChange(e);
             });

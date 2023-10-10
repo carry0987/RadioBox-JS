@@ -17,6 +17,7 @@ class RadioBox {
      * Initializes the plugin
      */
     init(elem, option, id) {
+        this.elements = []; // Store all elements here which will be used in destroy function
         let ele = Util.getElem(elem, 'all');
         if (ele.length < 1) throwError('Elements not found');
         let groupName;
@@ -27,12 +28,12 @@ class RadioBox {
             if (element.type !== 'radio') throwError('Element must be radio');
             if (!groupName) groupName = element.name;
             if (element.name !== groupName) throwError('All radioboxes must belong to the same group');
-            //Listen to click events
             element.addEventListener('change', (e) => {
                 const isChecked = e.target.checked;
                 e.target.setAttribute('checked', isChecked ? 'checked' : '');
                 this.onChange(e);
             });
+            this.elements.push(element); // Store each radio input box
         });
 
         return this;
@@ -42,10 +43,13 @@ class RadioBox {
      * Destroys the plugin
      */
     destroy() {
-        //Remove event listeners
-        this.ele.removeEventListener('change', this.onChange);
-        //Remove data
+        //Remove event listeners from all elements
+        this.elements.forEach(element => {
+            element.removeEventListener('change', this.onChange);
+        });
+        // Remove reference from instance array
         RadioBox.instance.splice(this.id, 1);
+        
         return this;
     }
 }

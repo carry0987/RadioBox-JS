@@ -1,6 +1,6 @@
 {
   "name": "@carry0987/radio-box",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "A library for create radio type check box",
   "type": "module",
   "main": "dist/radioBox.min.js",
@@ -10,7 +10,7 @@
     "build": "rollup --config rollup.config.js --environment BUILD:production"
   },
   "files": [
-    "dist"
+    "/dist"
   ],
   "repository": {
     "type": "git",

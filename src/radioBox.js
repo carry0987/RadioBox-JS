@@ -73,7 +73,7 @@ class RadioBox {
     }
 }
 
-RadioBox.version = '1.2.0';
+RadioBox.version = '1.2.2';
 RadioBox.instance = [];
 RadioBox.defaultOption = {
     checked: null,

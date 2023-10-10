@@ -30,10 +30,10 @@ class RadioBox {
         this.elements = []; // Store all elements here which will be used in destroy function
         let ele = Util.getElem(elem, 'all');
         if (ele.length < 1) throwError('Elements not found');
-        let groupName;
+        let groupName, element;
         this.onChange = (e) => {if (this.option.onChange) this.option.onChange(e)};
-        ele.forEach(element => {
-            element = Util.getElem('input', null, element);
+        ele.forEach(elem => {
+            element = Util.getElem('input', null, elem);
             if (element.length < 1) throwError('Elements not found');
             element = element[0];
             if (element.type !== 'radio') throwError('Element must be radio');
@@ -74,6 +74,7 @@ class RadioBox {
         //Remove event listeners from all elements
         this.elements.forEach(element => {
             element.removeEventListener('change', this.onChange);
+            element.removeEventListener('change', this.option.onChange);
         });
         // Remove reference from instance array
         RadioBox.instance.splice(this.id, 1);

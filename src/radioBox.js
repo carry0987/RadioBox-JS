@@ -39,6 +39,13 @@ class RadioBox {
             if (element.type !== 'radio') throwError('Element must be radio');
             if (!groupName) groupName = element.name;
             if (element.name !== groupName) throwError('All radioboxes must belong to the same group');
+            // Check whether element has id or not
+            if (this.option.bindLabel && !element.id) {
+                let uuid = Util.createUniqueID();
+                element.id = uuid;
+                let label = elem.querySelector('label');
+                if (label) label.htmlFor = uuid; // Bind label to input by the unique id
+            }
             // Set checked
             if (this.option.checked && element.value === this.option.checked) {
                 element.checked = true;
@@ -83,11 +90,12 @@ class RadioBox {
     }
 }
 
-RadioBox.version = '1.3.3';
+RadioBox.version = '1.4.0';
 RadioBox.instance = [];
 RadioBox.defaultOption = {
     checked: null,
     onChange: null,
+    bindLabel: true
 };
 RadioBox.destroyAll = () => {
     RadioBox.instance.forEach((item, index) => {

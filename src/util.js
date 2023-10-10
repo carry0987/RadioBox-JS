@@ -29,8 +29,11 @@ const Util = {
         }
         return Util.deepMerge(target, ...sources);
     },
-    getChecked: function() {
+    getChecked() {
         return this.ele.checked;
+    },
+    createUniqueID() {
+        return 'radio_' + Math.random().toString(36).substring(2);
     }
 };
 

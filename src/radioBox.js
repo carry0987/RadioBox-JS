@@ -17,7 +17,7 @@ class RadioBox {
      * @return {string} Value of the checked radio box
      */
     get value() {
-        let checkedRadio = this.elements.find(element => element.getAttribute('checked') === 'checked');
+        let checkedRadio = this.elements.find(element => element.checked);
         return checkedRadio ? checkedRadio.value : null;
     }
 
@@ -25,42 +25,103 @@ class RadioBox {
      * Initializes the plugin
      */
     init(elem, option, id) {
+        let element = Util.getElem(elem, 'all');
+        if (element.length < 1) throwError('Elements not found');
         this.id = id;
         this.option = Util.deepMerge({}, RadioBox.defaultOption, option);
         this.elements = []; // Store all elements here which will be used in destroy function
-        let ele = Util.getElem(elem, 'all');
-        if (ele.length < 1) throwError('Elements not found');
-        let groupName, element;
-        this.onChange = (e) => {if (this.option.onChange) this.option.onChange(e)};
-        ele.forEach(elem => {
-            element = Util.getElem('input', null, elem);
-            if (element.length < 1) throwError('Elements not found');
-            element = element[0];
-            if (element.type !== 'radio') throwError('Element must be radio');
-            if (!groupName) groupName = element.name;
-            if (element.name !== groupName) throwError('All radioboxes must belong to the same group');
-            // Check whether element has id or not
-            if (this.option.bindLabel && !element.id) {
-                let uuid = Util.createUniqueID();
-                element.id = uuid;
-                let label = elem.querySelector('label');
-                if (label) label.htmlFor = uuid; // Bind label to input by the unique id
+        // Inject stylesheet
+        if (this.option?.styles && Object.keys(this.option.styles).length > 0) {
+            let styles = Util.deepMerge({}, this.option.styles);
+            Util.injectStylesheet(styles, this.id);
+        }
+        // Handle onChange event
+        this.onChange = (e, target) => {if (this.option.onChange) this.option.onChange(e, target)};
+        // Handle radio box
+        let groupName;
+        element.forEach((ele, index) => {
+            if (ele.type !== 'radio') throwError('Element must be radio');
+            if (ele.hasAttribute('data-radiobox')) return;
+            ele.setAttribute('data-radiobox', 'true');
+            if (!groupName) groupName = ele.name;
+            if (ele.name !== groupName) throwError('All radioboxes must belong to the same group');
+
+            // Handle switch title
+            let labelSibling = ele.nextElementSibling;
+            let title = ele?.title || ele?.dataset?.radioTitle;
+            let bindLabel = this.option.bindLabel;
+            let ramainLabel = false;
+            if (labelSibling && labelSibling.tagName === 'LABEL') {
+                title = (() => { // using IIFE
+                    if (!Util.isEmpty(ele.id)) {
+                        if (labelSibling.htmlFor === ele.id) {
+                            bindLabel = ramainLabel = true;
+                            return true;
+                        }
+                        if (labelSibling.dataset?.radioFor === ele.id) {
+                            return true;
+                        }
+                    }
+                    if (ele.dataset?.radioId && labelSibling.dataset?.radioFor === ele.dataset?.radioId) {
+                        return true;
+                    }
+                    return null;
+                })();
+                if (title === true) {
+                    title = labelSibling.textContent;
+                    labelSibling.parentNode.removeChild(labelSibling);
+                }
             }
-            // Set checked
-            if (this.option.checked && element.value === this.option.checked) {
-                element.checked = true;
-                element.setAttribute('checked', 'checked');
+
+            // Handle radio checked
+            if (this.option.checked && ele?.value === this.option.checked) {
+                // Remove checked attribute from other radio boxes
+                element.forEach(el => {
+                    if (el !== ele) {
+                        el.checked = false;
+                        el.removeAttribute('checked');
+                    }
+                });
+                ele.checked = true;
+                ele.setAttribute('checked', 'checked');
             }
+
+            // Insert radio box
+            let template = Util.getTemplate(this.id);
+            let templateNode = document.createElement('div');
+            templateNode.innerHTML = template.trim();
+            let labelNode = Util.getElem('label', templateNode);
+            let cloneEle = ele.cloneNode(true);
+            if (ramainLabel === true) {
+                labelNode.htmlFor = ele.id;
+            }
+            labelNode.parentNode.insertBefore(cloneEle, labelNode);
+            ele.parentNode.replaceChild(templateNode.firstElementChild, ele);
+
+            // Insert radio title
+            if (title === null) {
+                labelNode.parentNode.removeChild(labelNode);
+            } else {
+                labelNode.textContent = title;
+                if (bindLabel) {
+                    labelNode.classList.add('radio-labeled');
+                    labelNode.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        cloneEle.click();
+                    });
+                }
+            }
+
             // Add event listener
-            element.addEventListener('change', (e) => {
+            cloneEle.addEventListener('change', (e) => {
                 const isChecked = e.target.checked;
                 this.elements.forEach(el => {
-                    if(el !== e.target) el.removeAttribute('checked');
+                    if (el !== e.target) el.removeAttribute('checked');
                 });
                 e.target.setAttribute('checked', isChecked ? 'checked' : '');
-                this.onChange(e);
+                this.onChange(e, cloneEle);
             });
-            this.elements.push(element); // Store each radio input box
+            this.elements.push(cloneEle); // Store each radio input box
         });
 
         return this;
@@ -83,6 +144,7 @@ class RadioBox {
             element.removeEventListener('change', this.onChange);
             element.removeEventListener('change', this.option.onChange);
         });
+        Util.removeStylesheet(this.id);
         // Remove reference from instance array
         RadioBox.instance.splice(this.id, 1);
         
@@ -90,12 +152,13 @@ class RadioBox {
     }
 }
 
-RadioBox.version = '1.4.0';
+RadioBox.version = '1.5.0';
 RadioBox.instance = [];
 RadioBox.defaultOption = {
     checked: null,
     onChange: null,
-    bindLabel: true
+    bindLabel: true,
+    styles: {}
 };
 RadioBox.destroyAll = () => {
     RadioBox.instance.forEach((item, index) => {

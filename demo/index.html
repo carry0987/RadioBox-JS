@@ -8,47 +8,41 @@
 </head>
 <body>
     <div id="app">
-        <h1>Test</h1>
-        <div class="radio">
-            <input id="radio-1" name="radio-group" type="radio" value="radio-1" />
-            <label for="radio-1" class="radio-label">Radio-1</label>
-        </div>
-        <div class="radio">
-            <input id="radio-2" name="radio-group" type="radio" value="radio-2" />
-            <label for="radio-2" class="radio-label">Radio-2</label>
-        </div>
-        <div class="radio">
-            <input id="radio-3" name="radio-group" type="radio" value="radio-3" />
-            <label for="radio-3" class="radio-label">Radio-3</label>
-        </div>
+        <h1>Normal Radio Input (With label)</h1>
+        <input type="radio" name="radio-normal" id="radio-1" value="Test-1">
+        <label for="radio-1">Radio-1</label>
+        <input type="radio" name="radio-normal" id="radio-2" value="Test-2" checked>
+        <label for="radio-2">Radio-2</label>
     </div>
     <div id="app-2">
-        <h1>Test2</h1>
-        <div class="radio">
-            <input name="radio-group-2" type="radio" value="radio-4" />
-            <label class="radio-label">Radio-4</label>
-        </div>
-        <div class="radio">
-            <input name="radio-group-2" type="radio" value="radio-5" />
-            <label class="radio-label">Radio-5</label>
-        </div>
-        <div class="radio">
-            <input name="radio-group-2" type="radio" value="radio-6" />
-            <label class="radio-label">Radio-6</label>
-        </div>
+        <h1>Other Radio Input</h1>
+        <input type="radio" name="radio-other" title="Radio-3" value="Test-3">
+        <input type="radio" name="radio-other" id="radio-4" value="Test-4">
+        <label data-radio-for="radio-4">Radio-4</label>
+        <input type="radio" name="radio-other" value="Test-5" data-radio-id="radio-5">
+        <label data-radio-for="radio-5">Radio-5</label>
     </div>
     <script src="../dist/radioBox.min.js"></script>
     <script type="text/javascript">
-    let radioBox = new RadioBox('#app .radio', {
-        checked: 'radio-2',
-        onChange: function (value) {
-            console.log(value);
+    let radioBox = new RadioBox('#app input', {
+        styles: {
+            '.radio-box': {
+                'margin-bottom': '5px'
+            }
+        },
+        onChange: (event, target) => {
+            console.log(target);
         }
     });
-
     console.log(radioBox.value);
-    let radioBox2 = new RadioBox('#app-2 .radio', {
-        checked: 'radio-6'
+    let radioBox2 = new RadioBox('#app-2 input', {
+        checked: 'Test-5',
+        bindLabel: false,
+        styles: {
+            '.radio-box': {
+                'margin-bottom': '5px'
+            }
+        }
     });
     radioBox2.onChange = (e) => {
         console.log(e.target.value);

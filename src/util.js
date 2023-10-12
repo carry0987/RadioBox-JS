@@ -29,11 +29,50 @@ const Util = {
         }
         return Util.deepMerge(target, ...sources);
     },
+    injectStylesheet(stylesObject, id) {
+        let style = document.createElement('style');
+        style.id = 'radiobox-style' + id;
+        style.appendChild(document.createTextNode(''));
+        document.head.appendChild(style);
+
+        let stylesheet = document.styleSheets[document.styleSheets.length - 1];
+
+        for (let selector in stylesObject) {
+            if (stylesObject.hasOwnProperty(selector)) {
+                Util.compatInsertRule(stylesheet, selector, Util.buildRules(stylesObject[selector]), id);
+            }
+        }
+    },
+    buildRules(ruleObject) {
+        let ruleSet = '';
+        for (let [property, value] of Object.entries(ruleObject)) {
+            ruleSet += `${property}:${value};`;
+        }
+        return ruleSet;
+    },
+    compatInsertRule(stylesheet, selector, cssText, id) {
+        let modifiedSelector = selector.replace('.radio-box', '.radio-box-' + id);
+        stylesheet.insertRule(modifiedSelector + '{' + cssText + '}', 0);
+    },
+    removeStylesheet(id) {
+        let styleElement = Util.getElem('#radiobox-style' + id);
+        if (styleElement) {
+            styleElement.parentNode.removeChild(styleElement);
+        }
+    },
+    isEmpty(str) {
+        return (!str?.length);
+    },
+    getTemplate(id) {
+        let template = `
+        <div class="radio-box radio-box-${id}">
+            <label class="radio-title"></label>
+        </div>
+        `;
+        return template;
+    },
     getChecked() {
         return this.ele.checked;
-    },
-    createUniqueID() {
-        return 'radio_' + Math.random().toString(36).substring(2);
     }
 };
 

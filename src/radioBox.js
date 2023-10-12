@@ -74,14 +74,9 @@ class RadioBox {
             }
 
             // Handle radio checked
-            if (this.option.checked && ele?.value === this.option.checked) {
+            if ((this.option.checked && ele?.value === this.option.checked) || (index === this.option?.checked)) {
                 // Remove checked attribute from other radio boxes
-                element.forEach(el => {
-                    if (el !== ele) {
-                        el.checked = false;
-                        el.removeAttribute('checked');
-                    }
-                });
+                element.forEach(el => el !== ele && (el.checked = false, el.removeAttribute('checked')));
                 ele.checked = true;
                 ele.setAttribute('checked', 'checked');
             }
@@ -152,7 +147,7 @@ class RadioBox {
     }
 }
 
-RadioBox.version = '1.5.0';
+RadioBox.version = '1.5.1';
 RadioBox.instance = [];
 RadioBox.defaultOption = {
     checked: null,

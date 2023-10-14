@@ -5,7 +5,6 @@ import './radioBox.css';
 
 class RadioBox {
     constructor(elem, option = {}) {
-        if (!(this instanceof RadioBox)) return new RadioBox(elem, option);
         this.init(elem, option, RadioBox.instance.length);
         RadioBox.instance.push(this);
 

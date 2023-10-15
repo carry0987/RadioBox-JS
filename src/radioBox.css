@@ -13,6 +13,7 @@
     --disabled: #f4f4f4;
     -webkit-appearance: none;
     -moz-appearance: none;
+    appearance: none;
     height: 24px;
     width: 24px;
     outline: none;

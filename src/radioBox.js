@@ -1,4 +1,4 @@
-import Util from './util';
+import Utils from './utils-ext';
 import throwError from './error';
 import reportInfo from './report';
 import './radioBox.css';
@@ -24,15 +24,15 @@ class RadioBox {
      * Initializes the plugin
      */
     init(elem, option, id) {
-        let element = Util.getElem(elem, 'all');
+        let element = Utils.getElem(elem, 'all');
         if (element.length < 1) throwError('Elements not found');
         this.id = id;
-        this.option = Util.deepMerge({}, RadioBox.defaultOption, option);
+        this.option = Utils.deepMerge({}, RadioBox.defaultOption, option);
         this.elements = []; // Store all elements here which will be used in destroy function
         // Inject stylesheet
         if (this.option?.styles && Object.keys(this.option.styles).length > 0) {
-            let styles = Util.deepMerge({}, this.option.styles);
-            Util.injectStylesheet(styles, this.id);
+            let styles = Utils.deepMerge({}, this.option.styles);
+            Utils.injectStylesheet(styles, this.id);
         }
         // Handle onChange event
         this.onChange = (e, target) => {if (this.option.onChange) this.option.onChange(e, target)};
@@ -52,7 +52,7 @@ class RadioBox {
             let ramainLabel = false;
             if (labelSibling && labelSibling.tagName === 'LABEL') {
                 title = (() => { // using IIFE
-                    if (!Util.isEmpty(ele.id)) {
+                    if (!Utils.isEmpty(ele.id)) {
                         if (labelSibling.htmlFor === ele.id) {
                             bindLabel = ramainLabel = true;
                             return true;
@@ -81,10 +81,10 @@ class RadioBox {
             }
 
             // Insert radio box
-            let template = Util.getTemplate(this.id);
+            let template = Utils.getTemplate(this.id);
             let templateNode = document.createElement('div');
             templateNode.innerHTML = template.trim();
-            let labelNode = Util.getElem('label', templateNode);
+            let labelNode = Utils.getElem('label', templateNode);
             let cloneEle = ele.cloneNode(true);
             if (ramainLabel === true) {
                 labelNode.htmlFor = ele.id;
@@ -138,7 +138,7 @@ class RadioBox {
             element.removeEventListener('change', this.onChange);
             element.removeEventListener('change', this.option.onChange);
         });
-        Util.removeStylesheet(this.id);
+        Utils.removeStylesheet(this.id);
         // Remove reference from instance array
         RadioBox.instance.splice(this.id, 1);
         

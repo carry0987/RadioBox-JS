@@ -5,6 +5,8 @@ import resolve from '@rollup/plugin-node-resolve';
 import { createRequire } from 'module';
 const pkg = createRequire(import.meta.url)('./package.json');
 
+const isProduction = process.env.BUILD === 'production';
+
 export default {
     input: 'src/radioBox.js',
     output: [
@@ -12,7 +14,7 @@ export default {
             file: pkg.main,
             format: 'umd',
             name: 'RadioBox',
-            plugins: [terser()],
+            plugins: isProduction ? [terser()] : []
         }
     ],
     plugins: [

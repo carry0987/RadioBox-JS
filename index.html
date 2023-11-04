@@ -42,6 +42,9 @@
             '.radio-box': {
                 'margin-bottom': '5px'
             }
+        },
+        loaded: (radioBox) => {
+            console.log(radioBox.value);
         }
     });
     radioBox2.onChange = (e) => {

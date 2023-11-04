@@ -118,6 +118,9 @@ class RadioBox {
             this.elements.push(cloneEle); // Store each radio input box
         });
 
+        // Handle radio loaded
+        if (this.option.loaded) this.option.loaded(this);
+
         return this;
     }
 
@@ -150,6 +153,7 @@ RadioBox.version = '__version__';
 RadioBox.instance = [];
 RadioBox.defaultOption = {
     checked: null,
+    loaded: null,
     onChange: null,
     bindLabel: true,
     styles: {}

@@ -92,6 +92,7 @@
     display: inline-block;
     vertical-align: top;
     margin-left: 4px;
+    line-height: 1;
 }
 
 .radio-box label.radio-labeled {

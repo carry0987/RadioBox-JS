@@ -130,13 +130,3 @@
     margin: 0.5rem;
     display: inline-block;
 }
-
-@media screen and (min-width: 280px) and (max-width: 680px) {
-    .radio-box {
-        margin: 0.25em;
-    }
-
-    .radio-box input[type="radio"]+.radio-title:before {
-        margin-right: 0.25em;
-    }
-}

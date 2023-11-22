@@ -1,6 +1,6 @@
 {
   "name": "@carry0987/radio-box",
-  "version": "1.5.11",
+  "version": "1.5.12",
   "description": "A library for create radio type check box",
   "type": "module",
   "main": "dist/radioBox.min.js",

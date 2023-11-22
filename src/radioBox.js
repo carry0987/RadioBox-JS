@@ -1,5 +1,5 @@
-import Utils from './utils-ext';
-import throwError from './error';
+import domUtils, { getTemplate } from './utils-ext';
+import { deepMerge, injectStylesheet, isEmpty, removeStylesheet, errorUtils } from '@carry0987/utils';
 import reportInfo from './report';
 import './radioBox.css';
 
@@ -24,26 +24,26 @@ class RadioBox {
      * Initializes the plugin
      */
     init(elem, option, id) {
-        let element = Utils.getElem(elem, 'all');
-        if (element.length < 1) throwError('Elements not found');
+        let element = domUtils.getElem(elem, 'all');
+        if (element.length < 1) errorUtils.throwError('Elements not found');
         this.id = id;
-        this.option = Utils.deepMerge({}, RadioBox.defaultOption, option);
+        this.option = deepMerge({}, RadioBox.defaultOption, option);
         this.elements = []; // Store all elements here which will be used in destroy function
         // Inject stylesheet
         if (this.option?.styles && Object.keys(this.option.styles).length > 0) {
-            let styles = Utils.deepMerge({}, this.option.styles);
-            Utils.injectStylesheet(styles, this.id);
+            let styles = deepMerge({}, this.option.styles);
+            injectStylesheet(styles, this.id);
         }
         // Handle onChange event
         this.onChange = (e, target) => {if (this.option.onChange) this.option.onChange(e, target)};
         // Handle radio box
         let groupName;
         element.forEach((ele, index) => {
-            if (ele.type !== 'radio') throwError('Element must be radio');
+            if (ele.type !== 'radio') errorUtils.throwError('Element must be radio');
             if (ele.hasAttribute('data-radiobox')) return;
             ele.setAttribute('data-radiobox', 'true');
             if (!groupName) groupName = ele.name;
-            if (ele.name !== groupName) throwError('All radioboxes must belong to the same group');
+            if (ele.name !== groupName) errorUtils.throwError('All radioboxes must belong to the same group');
 
             // Handle switch title
             let labelSibling = ele.nextElementSibling;
@@ -52,7 +52,7 @@ class RadioBox {
             let ramainLabel = false;
             if (labelSibling && labelSibling.tagName === 'LABEL') {
                 title = (() => { // using IIFE
-                    if (!Utils.isEmpty(ele.id)) {
+                    if (!isEmpty(ele.id)) {
                         if (labelSibling.htmlFor === ele.id) {
                             bindLabel = ramainLabel = true;
                             return true;
@@ -81,10 +81,10 @@ class RadioBox {
             }
 
             // Insert radio box
-            let template = Utils.getTemplate(this.id);
+            let template = getTemplate(this.id);
             let templateNode = document.createElement('div');
             templateNode.innerHTML = template.trim();
-            let labelNode = Utils.getElem('label', templateNode);
+            let labelNode = domUtils.getElem('label', templateNode);
             let cloneEle = ele.cloneNode(true);
             if (ramainLabel === true) {
                 labelNode.htmlFor = ele.id;
@@ -141,7 +141,7 @@ class RadioBox {
             element.removeEventListener('change', this.onChange);
             element.removeEventListener('change', this.option.onChange);
         });
-        Utils.removeStylesheet(this.id);
+        removeStylesheet(this.id);
         // Remove reference from instance array
         RadioBox.instance.splice(this.id, 1);
         

@@ -30,8 +30,8 @@
                 'margin-bottom': '5px'
             }
         },
-        onChange: (event, target) => {
-            console.log(target);
+        onChange: (target) => {
+            console.log('target');
         }
     });
     console.log(radioBox.value);
@@ -43,12 +43,12 @@
                 'margin-bottom': '10px'
             }
         },
-        loaded: (radioBox) => {
+        onLoad: (radioBox) => {
             console.log(radioBox.value);
         }
     });
-    radioBox2.onChange = (e) => {
-        console.log(e.target.value);
+    radioBox2.onChange = (target) => {
+        console.log(target.value);
     };
     </script>
 </body>

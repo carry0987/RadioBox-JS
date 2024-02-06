@@ -1,14 +1,17 @@
+import typescript from '@rollup/plugin-typescript';
 import terser from '@rollup/plugin-terser';
-import postcss from 'rollup-plugin-postcss';
 import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
+import { dts } from 'rollup-plugin-dts';
+import postcss from 'rollup-plugin-postcss';
+import del from 'rollup-plugin-delete';
 import { createRequire } from 'module';
 const pkg = createRequire(import.meta.url)('./package.json');
 
 const isProduction = process.env.BUILD === 'production';
 
-export default {
-    input: 'src/radioBox.js',
+const jsConfig = {
+    input: 'src/radioBox.ts',
     output: [
         {
             file: pkg.main,
@@ -18,15 +21,53 @@ export default {
         }
     ],
     plugins: [
-        resolve(),
-        replace({
-            preventAssignment: true,
-            __version__: pkg.version
-        }),
         postcss({
             extract: true,
             minimize: true,
             sourceMap: false
         }),
+        typescript(),
+        resolve(),
+        replace({
+            preventAssignment: true,
+            __version__: pkg.version
+        })
     ]
 };
+
+const esConfig = {
+    input: 'src/radioBox.ts',
+    output: [
+        {
+            file: pkg.module,
+            format: 'es'
+        }
+    ],
+    plugins: [
+        postcss({
+            extract: false,
+            sourceMap: false
+        }),
+        typescript(),
+        resolve(),
+        replace({
+            preventAssignment: true,
+            __version__: pkg.version
+        })
+    ]
+};
+
+const dtsConfig = {
+    input: 'dist/radioBox.d.ts',
+    output: {
+        file: pkg.types,
+        format: 'es'
+    },
+    external: [/\.css$/u],
+    plugins: [
+        dts(),
+        del({ hook: 'buildEnd', targets: ['!dist/index.js', 'dist/*.d.ts', 'dist/interface', 'dist/module'] })
+    ]
+};
+
+export default [jsConfig, esConfig, dtsConfig];

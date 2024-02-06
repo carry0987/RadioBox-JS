@@ -33,8 +33,8 @@ class Utils {
     static getTemplate(id: number | string): string {
         id = id.toString();
         let template = `
-        <div class='radio-box radio-box-${id}'>
-            <label class='radio-title'></label>
+        <div class="radio-box radio-box-${id}">
+            <label class="radio-title"></label>
         </div>
         `;
 

@@ -179,8 +179,8 @@ class Utils {
     static getTemplate(id) {
         id = id.toString();
         let template = `
-        <div class='radio-box radio-box-${id}'>
-            <label class='radio-title'></label>
+        <div class="radio-box radio-box-${id}">
+            <label class="radio-title"></label>
         </div>
         `;
         return template;
@@ -327,7 +327,7 @@ styleInject(css_248z);
 
 class RadioBox {
     static instances = [];
-    static version = '2.0.0';
+    static version = '2.0.1';
     static firstLoad = true;
     element = null;
     options;

@@ -80,10 +80,6 @@ class RadioBox {
         let bindLabel = this.options.bindLabel ?? false;
         let { title, remainLabel, randomID, labelToRestore } = Utils.handleRadioboxTitle(ele, labelSibling);
         bindLabel = remainLabel ? true : bindLabel;
-        if (title && labelSibling && labelSibling.tagName === 'LABEL') {
-            title = labelSibling.textContent || title;
-            labelSibling.parentNode?.removeChild(labelSibling);
-        }
 
         // Handle radiobox checked status
         if (this.options.checked) {
@@ -92,8 +88,7 @@ class RadioBox {
         }
 
         // Insert radiobox
-        let { cloneEle, templateNode, labelNode } = Utils.insertRadiobox(this.id.toString(), ele, randomID, remainLabel);
-        ele.parentNode?.replaceChild(templateNode.firstElementChild || templateNode, ele);
+        let { cloneEle, labelNode } = Utils.insertRadiobox(this.id.toString(), ele, randomID, remainLabel);
 
         // Insert radiobox title
         Utils.insertRadioboxTitle(title, bindLabel, labelNode, cloneEle);

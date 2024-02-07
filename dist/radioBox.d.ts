@@ -11,6 +11,11 @@ interface RadioBoxOption {
     bindLabel?: boolean;
     styles?: object;
 }
+interface RadioInputElement extends HTMLInputElement {
+    withID: boolean;
+    radioBoxChange?: EventListener;
+    labelToRestore?: HTMLLabelElement;
+}
 
 declare class RadioBox {
     private static instances;
@@ -33,14 +38,19 @@ declare class RadioBox {
     private radioBoxChange;
     private destroy;
     set onChange(callback: OnChangeCallback);
-    empty(): RadioBox;
-    refresh(): void;
-    static destroyAll(): void;
+    /**
+     * Get all radio box elements
+     * @return {RadioInputElement[]} All radio box elements
+     */
+    get elements(): RadioInputElement[];
     /**
      * Get value of the checked radio box
      * @return {string} Value of the checked radio box
      */
     get value(): string | null;
+    empty(): RadioBox;
+    refresh(): void;
+    static destroyAll(): void;
 }
 
 export { RadioBox as default };

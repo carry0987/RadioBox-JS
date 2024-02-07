@@ -205,6 +205,8 @@ class Utils {
                 labelToRestore = labelSibling.cloneNode(true);
                 // Prefer the explicitly set title, fall back to text from the label.
                 title = title || labelSibling.textContent;
+                // Remove the original label
+                labelSibling.parentNode.removeChild(labelSibling);
             }
         }
         return { title, remainLabel, randomID, labelToRestore };
@@ -226,6 +228,8 @@ class Utils {
         if (labelNode.parentNode) {
             labelNode.parentNode.insertBefore(cloneEle, labelNode);
         }
+        // Replace the original element with the new one
+        ele.parentNode.replaceChild(templateNode.firstElementChild || templateNode, ele);
         return { cloneEle, templateNode, labelNode };
     }
     static insertRadioboxTitle(title, bindLabel, labelNode, cloneEle) {
@@ -327,7 +331,7 @@ styleInject(css_248z);
 
 class RadioBox {
     static instances = [];
-    static version = '2.0.1';
+    static version = '2.0.2';
     static firstLoad = true;
     element = null;
     options;
@@ -393,18 +397,13 @@ class RadioBox {
         let bindLabel = this.options.bindLabel ?? false;
         let { title, remainLabel, randomID, labelToRestore } = Utils.handleRadioboxTitle(ele, labelSibling);
         bindLabel = remainLabel ? true : bindLabel;
-        if (title && labelSibling && labelSibling.tagName === 'LABEL') {
-            title = labelSibling.textContent || title;
-            labelSibling.parentNode?.removeChild(labelSibling);
-        }
         // Handle radiobox checked status
         if (this.options.checked) {
             // Initialize radiobox checked status based on options
             this.updateRadioboxCheckedStatus(ele, index);
         }
         // Insert radiobox
-        let { cloneEle, templateNode, labelNode } = Utils.insertRadiobox(this.id.toString(), ele, randomID, remainLabel);
-        ele.parentNode?.replaceChild(templateNode.firstElementChild || templateNode, ele);
+        let { cloneEle, labelNode } = Utils.insertRadiobox(this.id.toString(), ele, randomID, remainLabel);
         // Insert radiobox title
         Utils.insertRadioboxTitle(title, bindLabel, labelNode, cloneEle);
         // Add event listener
@@ -460,6 +459,21 @@ class RadioBox {
     set onChange(callback) {
         this.onChangeCallback = callback;
     }
+    /**
+     * Get all radio box elements
+     * @return {RadioInputElement[]} All radio box elements
+     */
+    get elements() {
+        return this.allElement;
+    }
+    /**
+     * Get value of the checked radio box
+     * @return {string} Value of the checked radio box
+     */
+    get value() {
+        let checkedRadio = this.allElement.find(element => element.checked);
+        return checkedRadio ? checkedRadio.value : null;
+    }
     empty() {
         this.allElement.forEach(element => {
             element.checked = false;
@@ -480,14 +494,6 @@ class RadioBox {
             const instance = RadioBox.instances[0];
             instance.destroy();
         }
-    }
-    /**
-     * Get value of the checked radio box
-     * @return {string} Value of the checked radio box
-     */
-    get value() {
-        let checkedRadio = this.allElement.find(element => element.checked);
-        return checkedRadio ? checkedRadio.value : null;
     }
 }
 

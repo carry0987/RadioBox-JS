@@ -161,6 +161,24 @@ class RadioBox {
         this.onChangeCallback = callback;
     }
 
+    /**
+     * Get all radio box elements
+     * @return {RadioInputElement[]} All radio box elements
+     */
+    public get elements(): RadioInputElement[] {
+        return this.allElement;
+    }
+
+    /**
+     * Get value of the checked radio box
+     * @return {string} Value of the checked radio box
+     */
+    public get value(): string | null {
+        let checkedRadio = this.allElement.find(element => element.checked);
+
+        return checkedRadio ? checkedRadio.value : null;
+    }
+
     public empty(): RadioBox {
         this.allElement.forEach(element => {
             element.checked = false;
@@ -184,16 +202,6 @@ class RadioBox {
             const instance = RadioBox.instances[0];
             instance.destroy();
         }
-    }
-
-    /**
-     * Get value of the checked radio box
-     * @return {string} Value of the checked radio box
-     */
-    public get value(): string | null {
-        let checkedRadio = this.allElement.find(element => element.checked);
-
-        return checkedRadio ? checkedRadio.value : null;
     }
 }
 

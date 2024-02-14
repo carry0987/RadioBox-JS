@@ -5,11 +5,11 @@ interface OnLoadCallback {
     (radioBox: any): void;
 }
 interface RadioBoxOption {
-    checked?: string | number;
+    checked: string | number | null;
+    bindLabel: boolean;
+    styles: object;
     onChange?: OnChangeCallback;
     onLoad?: OnLoadCallback;
-    bindLabel?: boolean;
-    styles?: object;
 }
 interface RadioInputElement extends HTMLInputElement {
     withID: boolean;
@@ -28,7 +28,7 @@ declare class RadioBox {
     private groupName;
     private onChangeCallback?;
     private onLoadCallback?;
-    constructor(element: string | HTMLInputElement, option?: RadioBoxOption);
+    constructor(element: string | HTMLInputElement, option: Partial<RadioBoxOption>);
     private init;
     private injectStyles;
     private setupCallbacks;

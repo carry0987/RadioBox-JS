@@ -1,9 +1,9 @@
 import { RadioBoxOption } from '../interface/interfaces';
 
 export const defaults: RadioBoxOption = {
-    checked: undefined,
-    onChange: undefined,
-    onLoad: undefined,
+    checked: null,
     bindLabel: true,
-    styles: {}
+    styles: {},
+    onLoad: undefined,
+    onChange: undefined
 };

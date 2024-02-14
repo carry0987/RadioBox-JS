@@ -126,12 +126,10 @@ function generateRandom(length = 8) {
     return Math.random().toString(36).substring(2, 2 + length);
 }
 
-function addEventListener(...params) {
-    const [element, eventName, handler, options] = params;
+function addEventListener(element, eventName, handler, options) {
     element.addEventListener(eventName, handler, options);
 }
-function removeEventListener(...params) {
-    const [element, eventName, handler, options] = params;
+function removeEventListener(element, eventName, handler, options) {
     element.removeEventListener(eventName, handler, options);
 }
 function createEvent(eventName, detail, options) {
@@ -292,11 +290,11 @@ const reportInfo = (vars, showType = false) => {
 };
 
 const defaults = {
-    checked: undefined,
-    onChange: undefined,
-    onLoad: undefined,
+    checked: null,
     bindLabel: true,
-    styles: {}
+    styles: {},
+    onLoad: undefined,
+    onChange: undefined
 };
 
 function styleInject(css, ref) {
@@ -331,17 +329,17 @@ styleInject(css_248z);
 
 class RadioBox {
     static instances = [];
-    static version = '2.0.2';
+    static version = '2.0.3';
     static firstLoad = true;
     element = null;
-    options;
+    options = defaults;
     id = 0;
     allElement = [];
     groupName = '';
     // Methods for external use
     onChangeCallback;
     onLoadCallback;
-    constructor(element, option = {}) {
+    constructor(element, option) {
         this.init(element, option, RadioBox.instances.length);
         RadioBox.instances.push(this);
         if (RadioBox.instances.length === 1 && RadioBox.firstLoad === true) {
@@ -445,7 +443,7 @@ class RadioBox {
         });
         // Reset instance variables
         this.element = null;
-        this.options = {};
+        this.options = defaults;
         this.allElement = [];
         // Remove any injected stylesheets
         Utils.removeStylesheet(this.id.toString());

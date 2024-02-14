@@ -9,7 +9,7 @@ class RadioBox {
     private static version: string = '__version__';
     private static firstLoad: boolean = true;
     private element: string | HTMLInputElement | null = null;
-    private options!: RadioBoxOption;
+    private options: RadioBoxOption = defaults;
     private id: number = 0;
     private allElement: RadioInputElement[] = [];
     private groupName: string = '';
@@ -18,7 +18,7 @@ class RadioBox {
     private onChangeCallback?: OnChangeCallback;
     private onLoadCallback?: OnLoadCallback;
 
-    constructor(element: string | HTMLInputElement, option: RadioBoxOption = {}) {
+    constructor(element: string | HTMLInputElement, option: Partial<RadioBoxOption>) {
         this.init(element, option, RadioBox.instances.length);
         RadioBox.instances.push(this);
 
@@ -30,12 +30,12 @@ class RadioBox {
         RadioBox.firstLoad = false;
     }
 
-    private init(elements: string | HTMLInputElement, option: RadioBoxOption, id: number) {
+    private init(elements: string | HTMLInputElement, option: Partial<RadioBoxOption>, id: number) {
         let elem = Utils.getElem<HTMLInputElement>(elements, 'all');
         if (!elem || elem.length < 1) Utils.throwError('Cannot find elements : ' + elements);
         this.id = id;
         this.element = elements;
-        this.options = Utils.deepMerge({}, defaults, option);
+        this.options = Utils.deepMerge({} as RadioBoxOption, defaults, option);
 
         // Inject stylesheet
         this.injectStyles();
@@ -138,7 +138,7 @@ class RadioBox {
 
         // Reset instance variables
         this.element = null;
-        this.options = {};
+        this.options = defaults;
         this.allElement = [];
 
         // Remove any injected stylesheets

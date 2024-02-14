@@ -7,11 +7,11 @@ export interface OnLoadCallback {
 }
 
 export interface RadioBoxOption {
-    checked?: string | number;
+    checked: string | number | null;
+    bindLabel: boolean;
+    styles: object;
     onChange?: OnChangeCallback;
     onLoad?: OnLoadCallback;
-    bindLabel?: boolean;
-    styles?: object;
 }
 
 export interface RadioboxTitleDetail {

@@ -329,7 +329,7 @@ styleInject(css_248z);
 
 class RadioBox {
     static instances = [];
-    static version = '2.0.3';
+    static version = '2.0.4';
     static firstLoad = true;
     element = null;
     options = defaults;
@@ -428,7 +428,7 @@ class RadioBox {
             Utils.toggleCheckStatus(ele, shouldBeChecked);
         });
     }
-    radioBoxChange(target = null) {
+    radioBoxChange(target) {
         this.onChangeCallback?.(target);
         if (target) {
             this.updateAllRadioboxesCheckedStatus(target, this.allElement.indexOf(target));

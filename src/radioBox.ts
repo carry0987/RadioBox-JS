@@ -121,7 +121,7 @@ class RadioBox {
         });
     }
 
-    private radioBoxChange(target: RadioInputElement | null = null): void {
+    private radioBoxChange(target: RadioInputElement): void {
         this.onChangeCallback?.(target);
         if (target) {
             this.updateAllRadioboxesCheckedStatus(target, this.allElement.indexOf(target));

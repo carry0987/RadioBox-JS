@@ -1,5 +1,5 @@
 interface OnChangeCallback {
-    (target: HTMLInputElement | null): void;
+    (target: HTMLInputElement): void;
 }
 interface OnLoadCallback {
     (radioBox: any): void;

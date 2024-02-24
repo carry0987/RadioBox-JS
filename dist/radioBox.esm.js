@@ -329,7 +329,7 @@ styleInject(css_248z);
 
 class RadioBox {
     static instances = [];
-    static version = '2.0.5';
+    static version = '2.0.6';
     static firstLoad = true;
     element = null;
     options = defaults;
@@ -458,6 +458,13 @@ class RadioBox {
         this.onChangeCallback = callback;
     }
     /**
+     * Set value of the checked radio box
+     * @param {string} value - Value to set
+     */
+    set value(value) {
+        this.setValue(value);
+    }
+    /**
      * Get all radio box elements
      * @return {RadioInputElement[]} All radio box elements
      */
@@ -471,6 +478,15 @@ class RadioBox {
     get value() {
         let checkedRadio = this.allElement.find(element => element.checked);
         return checkedRadio ? checkedRadio.value : null;
+    }
+    setValue(value) {
+        this.allElement.forEach((element) => {
+            const shouldBeChecked = (typeof value === 'string' && element.value === value);
+            if (shouldBeChecked && !element.checked) {
+                element.checked = true;
+                this.radioBoxChange(element);
+            }
+        });
     }
     setChecked(index) {
         this.allElement.forEach((element, idx) => {

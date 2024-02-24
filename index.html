@@ -36,6 +36,8 @@
         }
     });
     console.log(radioBox.value);
+    radioBox.setChecked('Test-1'); // Check by value, you can use index too
+
     let radioBox2 = new RadioBox('#app-2 input', {
         checked: 1, // You can use index or value
         bindLabel: false,

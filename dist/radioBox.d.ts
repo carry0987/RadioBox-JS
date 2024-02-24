@@ -48,6 +48,7 @@ declare class RadioBox {
      * @return {string} Value of the checked radio box
      */
     get value(): string | null;
+    setChecked(index: number | string): void;
     empty(): RadioBox;
     refresh(): void;
     static destroyAll(): void;

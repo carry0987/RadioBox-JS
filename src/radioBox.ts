@@ -174,6 +174,16 @@ class RadioBox {
         return checkedRadio ? checkedRadio.value : null;
     }
 
+    public setChecked(index: number | string): void {
+        this.allElement.forEach((element, idx) => {
+            const shouldBeChecked = (typeof index === 'number' && index === idx) || (typeof index === 'string' && element.value === index);
+            if (shouldBeChecked && !element.checked) {
+                element.checked = true;
+                this.radioBoxChange(element);
+            }
+        });
+    }
+
     public empty(): RadioBox {
         this.allElement.forEach(element => {
             element.checked = false;

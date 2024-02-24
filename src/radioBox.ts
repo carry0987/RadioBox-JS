@@ -158,9 +158,9 @@ class RadioBox {
 
     /**
      * Set value of the checked radio box
-     * @param {string} value - Value to set
+     * @param {string | number} value - Value to set
      */
-    public set value(value: string) {
+    public set value(value: string | number) {
         this.setValue(value);
     }
 
@@ -182,9 +182,10 @@ class RadioBox {
         return checkedRadio ? checkedRadio.value : null;
     }
 
-    public setValue(value: string): void {
+    public setValue(value: number | string): void {
+        value = value.toString();
         this.allElement.forEach((element) => {
-            const shouldBeChecked = (typeof value === 'string' && element.value === value);
+            const shouldBeChecked = element.value === value;
             if (shouldBeChecked && !element.checked) {
                 element.checked = true;
                 this.radioBoxChange(element);

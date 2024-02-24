@@ -40,9 +40,9 @@ declare class RadioBox {
     set onChange(callback: OnChangeCallback);
     /**
      * Set value of the checked radio box
-     * @param {string} value - Value to set
+     * @param {string | number} value - Value to set
      */
-    set value(value: string);
+    set value(value: string | number);
     /**
      * Get all radio box elements
      * @return {RadioInputElement[]} All radio box elements
@@ -53,7 +53,7 @@ declare class RadioBox {
      * @return {string} Value of the checked radio box
      */
     get value(): string | null;
-    setValue(value: string): void;
+    setValue(value: number | string): void;
     setChecked(index: number | string): void;
     empty(): RadioBox;
     refresh(): void;

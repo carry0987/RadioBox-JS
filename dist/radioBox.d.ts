@@ -11,6 +11,17 @@ interface RadioBoxOption {
     onChange?: OnChangeCallback;
     onLoad?: OnLoadCallback;
 }
+interface RadioboxTitleDetail {
+    title: string | null;
+    remainLabel: boolean;
+    randomID: string | null;
+    labelToRestore?: HTMLLabelElement;
+}
+interface RadioboxTemplate {
+    cloneEle: RadioInputElement;
+    templateNode: HTMLDivElement;
+    labelNode: HTMLLabelElement;
+}
 interface RadioInputElement extends HTMLInputElement {
     withID: boolean;
     radioBoxChange?: EventListener;
@@ -60,4 +71,4 @@ declare class RadioBox {
     static destroyAll(): void;
 }
 
-export { RadioBox as default };
+export { type OnChangeCallback, type OnLoadCallback, type RadioBoxOption, type RadioInputElement, type RadioboxTemplate, type RadioboxTitleDetail, RadioBox as default };

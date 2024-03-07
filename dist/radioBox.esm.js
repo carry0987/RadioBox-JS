@@ -333,7 +333,7 @@ styleInject(css_248z);
 
 class RadioBox {
     static instances = [];
-    static version = '2.0.8';
+    static version = '2.0.9';
     static firstLoad = true;
     element = null;
     options = defaults;

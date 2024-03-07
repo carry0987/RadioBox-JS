@@ -234,4 +234,5 @@ class RadioBox {
     }
 }
 
-export default RadioBox;
+export { RadioBox as default };
+export * from './interface/interfaces';

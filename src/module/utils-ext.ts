@@ -9,13 +9,9 @@ import {
     isEmpty,
     removeStylesheet,
     throwError,
-    eventUtils,
+    eventUtils
 } from '@carry0987/utils';
-import {
-    RadioboxTitleDetail,
-    RadioboxTemplate,
-    RadioInputElement,
-} from '../interface/interfaces';
+import { RadioboxTitleDetail, RadioboxTemplate, RadioInputElement } from '@/interface/interfaces';
 
 class Utils {
     static throwError = throwError;
@@ -41,10 +37,7 @@ class Utils {
         return template;
     }
 
-    static handleRadioboxTitle(
-        ele: HTMLElement,
-        labelSibling: HTMLElement | null
-    ): RadioboxTitleDetail {
+    static handleRadioboxTitle(ele: HTMLElement, labelSibling: HTMLElement | null): RadioboxTitleDetail {
         let title: string | null = ele.title || ele.dataset.radioboxTitle || null;
         let remainLabel: boolean = false;
         let randomID: string | null = null;
@@ -98,7 +91,7 @@ class Utils {
         // Replace the original element with the new one
         ele.parentNode!.replaceChild(templateNode.firstElementChild || templateNode, ele);
 
-        return {cloneEle, templateNode, labelNode};
+        return { cloneEle, templateNode, labelNode };
     }
 
     static insertRadioboxTitle(
@@ -148,6 +141,15 @@ class Utils {
         if (labelNode && labelNode.nodeType === Node.ELEMENT_NODE) {
             element.parentNode?.insertBefore(labelNode, element.nextSibling);
         }
+    }
+
+    /**
+     * Check if there are only one checked radio box or none
+     */
+    static validRadioBoxStatus(elements: RadioInputElement[]): boolean {
+        let checkedCount = elements.filter((el) => el.checked).length;
+
+        return checkedCount <= 1;
     }
 }
 

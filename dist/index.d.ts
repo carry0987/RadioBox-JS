@@ -2,7 +2,7 @@ interface OnChangeCallback {
     (target: HTMLInputElement): void;
 }
 interface OnLoadCallback {
-    (radioBox: any): void;
+    (radioBox: RadioBox): void;
 }
 interface RadioBoxOption {
     checked: string | number | null;
@@ -28,6 +28,23 @@ interface RadioInputElement extends HTMLInputElement {
     labelToRestore?: HTMLLabelElement;
 }
 
+type interfaces_OnChangeCallback = OnChangeCallback;
+type interfaces_OnLoadCallback = OnLoadCallback;
+type interfaces_RadioBoxOption = RadioBoxOption;
+type interfaces_RadioInputElement = RadioInputElement;
+type interfaces_RadioboxTemplate = RadioboxTemplate;
+type interfaces_RadioboxTitleDetail = RadioboxTitleDetail;
+declare namespace interfaces {
+  export type { interfaces_OnChangeCallback as OnChangeCallback, interfaces_OnLoadCallback as OnLoadCallback, interfaces_RadioBoxOption as RadioBoxOption, interfaces_RadioInputElement as RadioInputElement, interfaces_RadioboxTemplate as RadioboxTemplate, interfaces_RadioboxTitleDetail as RadioboxTitleDetail };
+}
+
+type InputElement = string | HTMLInputElement | Array<HTMLInputElement> | NodeListOf<HTMLInputElement> | null;
+
+type types_InputElement = InputElement;
+declare namespace types {
+  export type { types_InputElement as InputElement };
+}
+
 declare class RadioBox {
     private static instances;
     private static version;
@@ -39,7 +56,7 @@ declare class RadioBox {
     private groupName;
     private onChangeCallback?;
     private onLoadCallback?;
-    constructor(element: string | HTMLInputElement, option: Partial<RadioBoxOption>);
+    constructor(element: InputElement, option: Partial<RadioBoxOption>);
     private init;
     private injectStyles;
     private setupCallbacks;
@@ -71,4 +88,4 @@ declare class RadioBox {
     static destroyAll(): void;
 }
 
-export { type OnChangeCallback, type OnLoadCallback, type RadioBoxOption, type RadioInputElement, type RadioboxTemplate, type RadioboxTitleDetail, RadioBox as default };
+export { RadioBox, interfaces as RadioBoxInterface, types as RadioBoxType };

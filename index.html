@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RadioBox-JS</title>
-    <link href="dist/radioBox.min.css" rel="stylesheet">
+    <link href="dist/theme/radioBox.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="https://carry0987.github.io/favicon.png" type="image/x-icon">
 </head>
 <body>
@@ -25,20 +25,20 @@
     </div>
     <script src="dist/radioBox.min.js"></script>
     <script type="text/javascript">
-    let radioBox = new RadioBox('#app input', {
+    let radioBox = new radioBoxjs.RadioBox('#app input', {
         styles: {
             '.radio-box': {
                 'margin-bottom': '5px'
             }
         },
         onChange: (target) => {
-            console.log(target);
+            console.log('Changed:', target);
         }
     });
     console.log(radioBox.value);
     radioBox.value = 'Test-1';
 
-    let radioBox2 = new RadioBox('#app-2 input', {
+    let radioBox2 = new radioBoxjs.RadioBox('#app-2 input', {
         checked: 1, // You can use index or value
         bindLabel: false,
         styles: {

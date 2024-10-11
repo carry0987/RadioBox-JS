@@ -1,14 +1,14 @@
-import Utils from './module/utils-ext';
-import { OnChangeCallback, OnLoadCallback, RadioBoxOption, RadioInputElement } from './interface/interfaces';
-import reportInfo from './module/report';
-import { defaults } from './module/config';
-import './style/radioBox.css';
+import { defaults } from '@/component/config';
+import Utils from '@/module/utils-ext';
+import reportInfo from '@/module/report';
+import { OnChangeCallback, OnLoadCallback, RadioBoxOption, RadioInputElement } from '@/interface/interfaces';
+import { InputElement } from '@/type/types';
 
 class RadioBox {
     private static instances: RadioBox[] = [];
     private static version: string = '__version__';
     private static firstLoad: boolean = true;
-    private element: string | HTMLInputElement | null = null;
+    private element: InputElement = null;
     private options: RadioBoxOption = defaults;
     private id: number = 0;
     private allElement: RadioInputElement[] = [];
@@ -18,7 +18,7 @@ class RadioBox {
     private onChangeCallback?: OnChangeCallback;
     private onLoadCallback?: OnLoadCallback;
 
-    constructor(element: string | HTMLInputElement, option: Partial<RadioBoxOption>) {
+    constructor(element: InputElement, option: Partial<RadioBoxOption>) {
         this.init(element, option, RadioBox.instances.length);
         RadioBox.instances.push(this);
 
@@ -30,10 +30,12 @@ class RadioBox {
         RadioBox.firstLoad = false;
     }
 
-    private init(elements: string | HTMLInputElement, option: Partial<RadioBoxOption>, id: number) {
+    private init(elements: InputElement, option: Partial<RadioBoxOption>, id: number) {
         let elem: NodeListOf<HTMLInputElement> | Array<HTMLInputElement> | null = null;
         if (typeof elements === 'string') {
             elem = Utils.getElem<HTMLInputElement>(elements, 'all');
+        } else if (elements instanceof NodeList || elements instanceof Array) {
+            elem = elements;
         } else if (elements instanceof HTMLInputElement) {
             elem = [elements];
         }
@@ -68,7 +70,9 @@ class RadioBox {
 
     private setupCallbacks(): void {
         // Handle onChange event
-        this.onChange = (target) => {if (this.options?.onChange) this.options.onChange(target)};
+        this.onChange = (target) => {
+            if (this.options?.onChange) this.options.onChange(target);
+        };
         // Handle onLoad event
         this.onLoadCallback = this.options?.onLoad;
     }
@@ -87,7 +91,7 @@ class RadioBox {
         bindLabel = remainLabel ? true : bindLabel;
 
         // Handle radiobox checked status
-        if (this.options.checked) {
+        if (this.options.checked || ele.checked) {
             // Initialize radiobox checked status based on options
             this.updateRadioboxCheckedStatus(ele, index);
         }
@@ -111,17 +115,26 @@ class RadioBox {
     private updateRadioboxCheckedStatus(ele: HTMLInputElement, index: number): void {
         // Logic to determine if a radiobox should be checked based on the provided options
         const checked = this.options.checked;
-        if ((typeof checked === 'string' && ele.value === checked) || (typeof checked === 'number' && index === checked)) {
+        if (
+            (typeof checked === 'string' && ele.value === checked) ||
+            (typeof checked === 'number' && index === checked)
+        ) {
             // Remove checked attribute from other radio boxes
-            this.allElement.forEach(el => el !== ele && Utils.toggleCheckStatus(el, false));
+            this.allElement.forEach((el) => el !== ele && Utils.toggleCheckStatus(el, false));
             Utils.toggleCheckStatus(ele, true);
+            return;
+        }
+
+        if (ele.checked && Utils.validRadioBoxStatus(this.allElement)) {
+            Utils.toggleCheckStatus(ele, true);
+            return;
         }
     }
 
     private updateAllRadioboxesCheckedStatus(selectedEle: HTMLInputElement, selectedIndex: number): void {
         // When a radiobox is checked manually, ensure only one radiobox is checked at a time
         this.allElement.forEach((ele, index) => {
-            const shouldBeChecked = (ele === selectedEle) || (selectedIndex === index);
+            const shouldBeChecked = ele === selectedEle || selectedIndex === index;
             Utils.toggleCheckStatus(ele, shouldBeChecked);
         });
     }
@@ -137,7 +150,7 @@ class RadioBox {
         // Reset firstLoad flag
         RadioBox.firstLoad = false;
         // Remove event listeners from all elements
-        this.allElement.forEach(element => {
+        this.allElement.forEach((element) => {
             Utils.restoreElement(element);
         });
 
@@ -182,7 +195,7 @@ class RadioBox {
      * @return {string} Value of the checked radio box
      */
     public get value(): string | null {
-        let checkedRadio = this.allElement.find(element => element.checked);
+        let checkedRadio = this.allElement.find((element) => element.checked);
 
         return checkedRadio ? checkedRadio.value : null;
     }
@@ -200,7 +213,8 @@ class RadioBox {
 
     public setChecked(index: number | string): void {
         this.allElement.forEach((element, idx) => {
-            const shouldBeChecked = (typeof index === 'number' && index === idx) || (typeof index === 'string' && element.value === index);
+            const shouldBeChecked =
+                (typeof index === 'number' && index === idx) || (typeof index === 'string' && element.value === index);
             if (shouldBeChecked && !element.checked) {
                 element.checked = true;
                 this.radioBoxChange(element);
@@ -209,7 +223,7 @@ class RadioBox {
     }
 
     public empty(): RadioBox {
-        this.allElement.forEach(element => {
+        this.allElement.forEach((element) => {
             element.checked = false;
             element.removeAttribute('checked');
         });
@@ -225,7 +239,7 @@ class RadioBox {
         }
     }
 
-    static destroyAll(): void {
+    public static destroyAll(): void {
         // Call destroy on all instances
         while (RadioBox.instances.length) {
             const instance = RadioBox.instances[0];
@@ -234,5 +248,4 @@ class RadioBox {
     }
 }
 
-export { RadioBox as default };
-export * from './interface/interfaces';
+export { RadioBox };

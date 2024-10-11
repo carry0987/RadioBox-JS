@@ -1,3 +1,11 @@
+const defaults = {
+    checked: null,
+    bindLabel: true,
+    styles: {},
+    onLoad: undefined,
+    onChange: undefined
+};
+
 function reportError(...error) {
     console.error(...error);
 }
@@ -8,9 +16,6 @@ function throwError(message) {
 function getElem(ele, mode, parent) {
     // Return generic Element type or NodeList
     if (typeof ele !== 'string') {
-        if (mode === 'all') {
-            return [ele];
-        }
         return ele;
     }
     let searchContext = document;
@@ -50,7 +55,30 @@ const replaceRule = {
     to: '.utils-'
 };
 function isObject(item) {
-    return typeof item === 'object' && item !== null && !Array.isArray(item);
+    return typeof item === 'object' && item !== null && !isArray(item);
+}
+function isArray(item) {
+    return Array.isArray(item);
+}
+function isEmpty(value) {
+    // Check for number
+    if (typeof value === 'number') {
+        return false;
+    }
+    // Check for string
+    if (typeof value === 'string' && value.length === 0) {
+        return true;
+    }
+    // Check for array
+    if (isArray(value) && value.length === 0) {
+        return true;
+    }
+    // Check for object
+    if (isObject(value) && Object.keys(value).length === 0) {
+        return true;
+    }
+    // Check for any falsy values
+    return !value;
 }
 function deepMerge(target, ...sources) {
     if (!sources.length)
@@ -62,9 +90,9 @@ function deepMerge(target, ...sources) {
                 const sourceKey = key;
                 const value = source[sourceKey];
                 const targetKey = key;
-                if (isObject(value)) {
+                if (isObject(value) || isArray(value)) {
                     if (!target[targetKey] || typeof target[targetKey] !== 'object') {
-                        target[targetKey] = {};
+                        target[targetKey] = isArray(value) ? [] : {};
                     }
                     deepMerge(target[targetKey], value);
                 }
@@ -120,14 +148,15 @@ function removeStylesheet(id = null) {
         styleElement.parentNode.removeChild(styleElement);
     }
 }
-function isEmpty(str) {
-    if (typeof str === 'number') {
-        return false;
-    }
-    return !str || (typeof str === 'string' && str.length === 0);
-}
 function generateRandom(length = 8) {
-    return Math.random().toString(36).substring(2, 2 + length);
+    let result = '';
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charactersLength);
+        result += characters[randomIndex];
+    }
+    return result;
 }
 
 function addEventListener(element, eventName, handler, options) {
@@ -277,6 +306,13 @@ class Utils {
             element.parentNode?.insertBefore(labelNode, element.nextSibling);
         }
     }
+    /**
+     * Check if there are only one checked radio box or none
+     */
+    static validRadioBoxStatus(elements) {
+        let checkedCount = elements.filter((el) => el.checked).length;
+        return checkedCount <= 1;
+    }
 }
 Utils.setStylesheetId('radiobox-style');
 Utils.setReplaceRule('.radio-box', '.radio-box-');
@@ -293,47 +329,9 @@ const reportInfo = (vars, showType = false) => {
     }
 };
 
-const defaults = {
-    checked: null,
-    bindLabel: true,
-    styles: {},
-    onLoad: undefined,
-    onChange: undefined
-};
-
-function styleInject(css, ref) {
-  if ( ref === void 0 ) ref = {};
-  var insertAt = ref.insertAt;
-
-  if (!css || typeof document === 'undefined') { return; }
-
-  var head = document.head || document.getElementsByTagName('head')[0];
-  var style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (insertAt === 'top') {
-    if (head.firstChild) {
-      head.insertBefore(style, head.firstChild);
-    } else {
-      head.appendChild(style);
-    }
-  } else {
-    head.appendChild(style);
-  }
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-}
-
-var css_248z = "/* Radio */\n.radio-box {\n    display: flex;\n    align-items: center;\n}\n\n.radio-box input[type=radio] {\n    --active: #275EFE;\n    --active-inner: #f4f4f4;\n    --border: #b4b4b4;\n    --border-hover: #b4b4b4;\n    --background: #f4f4f4;\n    --disabled: #f4f4f4;\n    -webkit-appearance: none;\n    -moz-appearance: none;\n    appearance: none;\n    height: 24px;\n    width: 24px;\n    outline: none;\n    display: inline-block;\n    text-align: center;\n    position: relative;\n    margin: 0;\n    cursor: pointer;\n    border: 1px solid var(--bc, var(--border));\n    background: var(--b, var(--background));\n    transition: background 300ms, border-color 300ms, box-shadow 300ms;\n}\n\n.radio-box input[type=radio]:after {\n    content: \"\";\n    display: block;\n    left: -3.5px;\n    top: -3.5px;\n    position: absolute;\n    transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s);\n}\n\n.radio-box input[type=radio]:checked {\n    --b: #F4F4F4;\n    --d-o: .3s;\n    --d-t: .6s;\n    --d-t-e: cubic-bezier(.2, .85, .32, 1.2);\n}\n\n.radio-box input[type=radio]:disabled {\n    --b: var(--disabled);\n    cursor: not-allowed;\n    opacity: 0.7;\n}\n\n.radio-box input[type=radio]:disabled:checked {\n    --b: var(--disabled-inner);\n    --bc: var(--border);\n}\n\n.radio-box input[type=radio]:disabled:not(:checked):after {\n    background-color: #f4f4f4;\n}\n\n.radio-box input[type=radio]:disabled:checked:after {\n    background-color: #b4b4b4;\n}\n\n.radio-box input[type=radio]:focus {\n    outline: none;\n    border-color: #3197EE;\n}\n\n.radio-box input[type=radio]:disabled+label {\n    cursor: not-allowed;\n}\n\n.radio-box input[type=radio]:disabled+span {\n    cursor: not-allowed;\n}\n\n.radio-box input[type=radio]:hover:not(:checked):not(:disabled) {\n    --bc: var(--border-hover);\n}\n\n.radio-box input[type=radio]:focus {\n    box-shadow: 0 0 0 #f4f4f4;\n}\n\n.radio-box input[type=radio]:not(.switch):after {\n    opacity: 1;\n}\n\n.radio-box label.radio-labeled,\n.radio-box input[type=radio]+label {\n    display: inline-block;\n    vertical-align: top;\n    margin-left: 4px;\n    line-height: 1;\n}\n\n.radio-box label.radio-labeled {\n    cursor: pointer;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n\n.radio-box input[type=radio] {\n    border-radius: 50%;\n}\n\n.radio-box input[type=radio]:after {\n    width: 28px;\n    height: 28px;\n    border-radius: 50%;\n    background: var(--active-inner);\n    opacity: 0;\n    transform: scale(var(--s, 0.7));\n}\n\n.radio-box input[type=radio]:checked {\n    --s: 0.575;\n}\n\n.radio-box input[type=radio]:checked:after {\n    background-color: #3197EE;\n    top: -3px;\n    left: -3px;\n}\n\n.radio-inline {\n    margin: 0.5rem;\n    display: inline-block;\n}\n";
-styleInject(css_248z);
-
 class RadioBox {
     static instances = [];
-    static version = '2.0.9';
+    static version = '2.1.0';
     static firstLoad = true;
     element = null;
     options = defaults;
@@ -356,6 +354,9 @@ class RadioBox {
         let elem = null;
         if (typeof elements === 'string') {
             elem = Utils.getElem(elements, 'all');
+        }
+        else if (elements instanceof NodeList || elements instanceof Array) {
+            elem = elements;
         }
         else if (elements instanceof HTMLInputElement) {
             elem = [elements];
@@ -385,8 +386,10 @@ class RadioBox {
     }
     setupCallbacks() {
         // Handle onChange event
-        this.onChange = (target) => { if (this.options?.onChange)
-            this.options.onChange(target); };
+        this.onChange = (target) => {
+            if (this.options?.onChange)
+                this.options.onChange(target);
+        };
         // Handle onLoad event
         this.onLoadCallback = this.options?.onLoad;
     }
@@ -406,7 +409,7 @@ class RadioBox {
         let { title, remainLabel, randomID, labelToRestore } = Utils.handleRadioboxTitle(ele, labelSibling);
         bindLabel = remainLabel ? true : bindLabel;
         // Handle radiobox checked status
-        if (this.options.checked) {
+        if (this.options.checked || ele.checked) {
             // Initialize radiobox checked status based on options
             this.updateRadioboxCheckedStatus(ele, index);
         }
@@ -425,16 +428,22 @@ class RadioBox {
     updateRadioboxCheckedStatus(ele, index) {
         // Logic to determine if a radiobox should be checked based on the provided options
         const checked = this.options.checked;
-        if ((typeof checked === 'string' && ele.value === checked) || (typeof checked === 'number' && index === checked)) {
+        if ((typeof checked === 'string' && ele.value === checked) ||
+            (typeof checked === 'number' && index === checked)) {
             // Remove checked attribute from other radio boxes
-            this.allElement.forEach(el => el !== ele && Utils.toggleCheckStatus(el, false));
+            this.allElement.forEach((el) => el !== ele && Utils.toggleCheckStatus(el, false));
             Utils.toggleCheckStatus(ele, true);
+            return;
+        }
+        if (ele.checked && Utils.validRadioBoxStatus(this.allElement)) {
+            Utils.toggleCheckStatus(ele, true);
+            return;
         }
     }
     updateAllRadioboxesCheckedStatus(selectedEle, selectedIndex) {
         // When a radiobox is checked manually, ensure only one radiobox is checked at a time
         this.allElement.forEach((ele, index) => {
-            const shouldBeChecked = (ele === selectedEle) || (selectedIndex === index);
+            const shouldBeChecked = ele === selectedEle || selectedIndex === index;
             Utils.toggleCheckStatus(ele, shouldBeChecked);
         });
     }
@@ -448,7 +457,7 @@ class RadioBox {
         // Reset firstLoad flag
         RadioBox.firstLoad = false;
         // Remove event listeners from all elements
-        this.allElement.forEach(element => {
+        this.allElement.forEach((element) => {
             Utils.restoreElement(element);
         });
         // Reset instance variables
@@ -486,7 +495,7 @@ class RadioBox {
      * @return {string} Value of the checked radio box
      */
     get value() {
-        let checkedRadio = this.allElement.find(element => element.checked);
+        let checkedRadio = this.allElement.find((element) => element.checked);
         return checkedRadio ? checkedRadio.value : null;
     }
     setValue(value) {
@@ -509,7 +518,7 @@ class RadioBox {
         });
     }
     empty() {
-        this.allElement.forEach(element => {
+        this.allElement.forEach((element) => {
             element.checked = false;
             element.removeAttribute('checked');
         });
@@ -531,4 +540,42 @@ class RadioBox {
     }
 }
 
-export { RadioBox as default };
+var interfaces = /*#__PURE__*/Object.freeze({
+    __proto__: null
+});
+
+var types = /*#__PURE__*/Object.freeze({
+    __proto__: null
+});
+
+function styleInject(css, ref) {
+  if ( ref === void 0 ) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (typeof document === 'undefined') { return; }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
+  }
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var css_248z = "/* Radio */\n.radio-box {\n  display: flex;\n  align-items: center;\n}\n.radio-box input[type=radio] {\n  --active: #275efe;\n  --active-inner: #f4f4f4;\n  --border: #b4b4b4;\n  --border-hover: #b4b4b4;\n  --background: #f4f4f4;\n  --disabled: #f4f4f4;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  height: 24px;\n  width: 24px;\n  outline: none;\n  display: inline-block;\n  text-align: center;\n  position: relative;\n  margin: 0;\n  cursor: pointer;\n  border: 1px solid var(--bc, var(--border));\n  background: var(--b, var(--background));\n  transition: background 300ms, border-color 300ms, box-shadow 300ms;\n  border-radius: 50%;\n}\n.radio-box input[type=radio]:after {\n  content: \"\";\n  display: block;\n  position: absolute;\n  left: -3.5px;\n  top: -3.5px;\n  width: 28px;\n  height: 28px;\n  border-radius: 50%;\n  background: var(--active-inner);\n  opacity: 0;\n  transform: scale(var(--s, 0.7));\n  transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s);\n}\n.radio-box input[type=radio]:checked {\n  --b: #f4f4f4;\n  --d-o: 0.3s;\n  --d-t: 0.6s;\n  --d-t-e: cubic-bezier(0.2, 0.85, 0.32, 1.2);\n  --s: 0.575;\n}\n.radio-box input[type=radio]:checked:after {\n  background-color: #3197ee;\n  top: -3px;\n  left: -3px;\n}\n.radio-box input[type=radio]:disabled {\n  --b: var(--disabled);\n  cursor: not-allowed;\n  opacity: 0.7;\n}\n.radio-box input[type=radio]:disabled:checked {\n  --b: var(--disabled-inner);\n  --bc: var(--border);\n}\n.radio-box input[type=radio]:disabled:not(:checked):after {\n  background-color: #f4f4f4;\n}\n.radio-box input[type=radio]:disabled:checked:after {\n  background-color: #b4b4b4;\n}\n.radio-box input[type=radio]:disabled + label,\n.radio-box input[type=radio]:disabled + span {\n  cursor: not-allowed;\n}\n.radio-box input[type=radio]:focus {\n  outline: none;\n  border-color: #3197ee;\n  box-shadow: 0 0 0 #f4f4f4;\n}\n.radio-box input[type=radio]:hover:not(:checked):not(:disabled) {\n  --bc: var(--border-hover);\n}\n.radio-box input[type=radio]:not(.switch):after {\n  opacity: 1;\n}\n.radio-box label.radio-labeled,\n.radio-box input[type=radio] + label {\n  display: inline-block;\n  vertical-align: top;\n  margin-left: 4px;\n  line-height: 1;\n}\n.radio-box label.radio-labeled {\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n\n.radio-inline {\n  margin: 0.5rem;\n  display: inline-block;\n}";
+styleInject(css_248z);
+
+export { RadioBox, interfaces as RadioBoxInterface, types as RadioBoxType };

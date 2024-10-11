@@ -1,9 +1,11 @@
+import { RadioBox } from '@/component/radioBox';
+
 export interface OnChangeCallback {
     (target: HTMLInputElement): void;
 }
 
 export interface OnLoadCallback {
-    (radioBox: any): void;
+    (radioBox: RadioBox): void;
 }
 
 export interface RadioBoxOption {

@@ -331,7 +331,7 @@ const reportInfo = (vars, showType = false) => {
 
 class RadioBox {
     static instances = [];
-    static version = '2.1.0';
+    static version = '2.1.1';
     static firstLoad = true;
     element = null;
     options = defaults;
@@ -409,7 +409,7 @@ class RadioBox {
         let { title, remainLabel, randomID, labelToRestore } = Utils.handleRadioboxTitle(ele, labelSibling);
         bindLabel = remainLabel ? true : bindLabel;
         // Handle radiobox checked status
-        if (this.options.checked || ele.checked) {
+        if (this.options.checked || this.options.checked === 0 || ele.checked) {
             // Initialize radiobox checked status based on options
             this.updateRadioboxCheckedStatus(ele, index);
         }

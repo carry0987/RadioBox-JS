@@ -91,7 +91,7 @@ class RadioBox {
         bindLabel = remainLabel ? true : bindLabel;
 
         // Handle radiobox checked status
-        if (this.options.checked || ele.checked) {
+        if (this.options.checked || this.options.checked === 0 || ele.checked) {
             // Initialize radiobox checked status based on options
             this.updateRadioboxCheckedStatus(ele, index);
         }

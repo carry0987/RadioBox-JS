@@ -331,7 +331,7 @@ const reportInfo = (vars, showType = false) => {
 
 class RadioBox {
     static instances = [];
-    static version = '2.1.2';
+    static version = '2.1.3';
     static firstLoad = true;
     element = null;
     options = defaults;
